@@ -1,4 +1,4 @@
 [submodule "src/libbson"]
 	path = src/libbson
 	url = git://github.com/mongodbinc-interns/libbson.git
-	branch = decimal-data-type
+	branch = demo
