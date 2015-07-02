@@ -348,7 +348,8 @@ test_dec128 (void)
    bson_iter_t dec_iter;
    mongoc_cursor_t *cursor;
    bool r;
-   bson_dec128_t dec128 = bson_dec128_from_string("-123456789.101112E-120");
+   bson_dec128_t dec128;
+   bson_dec128_from_string("-123456789.101112E-120", &dec128);
    bson_dec128_t read_decimal;
 
    client = test_framework_client_new (NULL);
@@ -363,7 +364,7 @@ test_dec128 (void)
    wr = mongoc_write_concern_new ();
    mongoc_write_concern_set_journal (wr, true);
 
-   doc = BCON_NEW ("the_decimal", BCON_DEC128(dec128));
+   doc = BCON_NEW ("the_decimal", BCON_DEC128(&dec128));
    r = mongoc_collection_insert (collection, MONGOC_INSERT_NONE, doc, wr,
                                  &error);
    if (!r) {
@@ -387,7 +388,7 @@ test_dec128 (void)
 
    ASSERT (bson_iter_find (&dec_iter, "the_decimal"));
    ASSERT (BSON_ITER_HOLDS_DEC128(&dec_iter));
-   read_decimal = bson_iter_dec128 (&dec_iter);
+   bson_iter_dec128 (&dec_iter, &read_decimal);
 
    ASSERT(read_decimal.high == dec128.high && read_decimal.low == dec128.low);
 
